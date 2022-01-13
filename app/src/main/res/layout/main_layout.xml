@@ -18,27 +18,32 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:background="@drawable/transparent_text_window"
         android:padding="15sp"
-        android:layout_margin="20sp"
-        >
+        android:layout_margin="20sp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Current Song"
+            android:text="CURRENT SONG"
             android:id="@+id/songName"
             android:textColor="@color/white"
             android:textSize="20sp"
+            android:fontFamily="@font/futura_font_family"
+            android:letterSpacing="-0.1"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Current Artist"
+            android:text="CURRENT ARTIST"
             android:id="@+id/artistName"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintTop_toTopOf="@id/songName"
             app:layout_constraintLeft_toLeftOf="parent"
+            android:fontFamily="@font/futura_font_family"
+            android:letterSpacing="-0.1"
             />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
