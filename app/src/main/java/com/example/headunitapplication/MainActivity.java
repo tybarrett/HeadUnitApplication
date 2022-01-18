@@ -40,12 +40,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MapStyleOptions.loadRawResourceStyle(
                         this, R.raw.map_style));
         googleMap.setIndoorEnabled(false);
+        googleMap.setBuildingsEnabled(false);
+        googleMap.getUiSettings().setCompassEnabled(false);
 
         if (!success) {
             System.err.println("Unable to parse style JSON.");
         }
-
-//        googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
 
         googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(0, 0))
