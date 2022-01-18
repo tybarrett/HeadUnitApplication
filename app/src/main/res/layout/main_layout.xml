@@ -58,7 +58,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/sidebar"
             android:orientation="vertical"
-            android:background="#2FFF0000">
+            android:background="#2F000000">
 
         </LinearLayout>
 
