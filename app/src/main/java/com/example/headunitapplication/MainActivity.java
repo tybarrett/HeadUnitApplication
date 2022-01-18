@@ -9,24 +9,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.MapsInitializer.Renderer;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, OnMapsSdkInitializedCallback {
 
     public static final CameraPosition SYDNEY =
             new CameraPosition.Builder().target(new LatLng(-33.87365, 151.20689))
                     .zoom(18)
                     .bearing(0)
-                    .tilt(45)
+                    .tilt(55)
                     .build();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        MapsInitializer.initialize(getApplicationContext(), Renderer.LATEST, this);
         setContentView(R.layout.main_layout);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -36,10 +40,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+//        googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
         boolean success = googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                         this, R.raw.map_style));
         googleMap.setIndoorEnabled(false);
+//        googleMap.setBuildingsEnabled(false);
 
         if (!success) {
             System.err.println("Unable to parse style JSON.");
@@ -52,6 +58,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .title("Marker"));
 
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), null);
+    }
+
+    @Override
+    public void onMapsSdkInitialized(MapsInitializer.Renderer renderer) {
+        switch (renderer) {
+            case LATEST:
+                Log.d("MapsDemo", "The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Log.d("MapsDemo", "The legacy version of the renderer is used.");
+                break;
+        }
     }
 
     /* "Widgets" to have:
