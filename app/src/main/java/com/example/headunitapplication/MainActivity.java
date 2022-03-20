@@ -60,7 +60,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .position(new LatLng(0, 0))
                 .title("Marker"));
 
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), null);
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(SYDNEY));
+
+        mapRotator = new MapRotator(googleMap);
+        mapRotator.start();
+
     }
 
     @SuppressLint("MissingPermission")
@@ -74,9 +78,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     /* "Widgets" to have:
     - Current song / artist
     - "Engine effort" (RPM)
+    - Throttle Position
+    - Current Gear
     - Vehicle speed
     - Battery level?
     - Engine temperature?
+    - Car Battery level?
     - Current posted limit? (use OSM API)
     - "Safety distance" (Distance to next speed camera)
 
