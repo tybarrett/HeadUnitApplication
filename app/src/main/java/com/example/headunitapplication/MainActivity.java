@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .build();
 
     private GoogleMap map;
+    private MapRotator mapRotator;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

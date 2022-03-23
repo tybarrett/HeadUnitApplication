@@ -44,14 +44,15 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.2"
+            android:layout_weight="0.3"
             android:id="@+id/left_padding"
-            android:orientation="horizontal"></LinearLayout>
+            android:orientation="horizontal"
+            android:background="@drawable/line_design"></LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.2"
+            android:layout_weight="0"
             app:layout_constraintLeft_toLeftOf="parent"
             android:background="@drawable/black_gradient_background">
 
@@ -60,43 +61,114 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.6"></LinearLayout>
+            android:layout_weight="0.7"></LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:background="@drawable/transparent_text_window"
-        android:padding="15sp"
-        android:layout_margin="20sp">
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        android:id="@+id/current_song"-->
+<!--        android:paddingLeft="15sp"-->
+<!--        android:layout_margin="20sp">-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CURRENT SONG"
-            android:id="@+id/songName"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:fontFamily="@font/futura_font_family"
-            android:letterSpacing="-0.1"
-            />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="CURRENT SONG"-->
+<!--            android:id="@+id/songName"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="20sp"-->
+<!--            android:fontFamily="@font/futura_font_family"-->
+<!--            />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CURRENT ARTIST"
-            android:id="@+id/artistName"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintTop_toTopOf="@id/songName"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:fontFamily="@font/futura_font_family"
-            android:letterSpacing="-0.1"
-            />
-    </LinearLayout>
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="CURRENT ARTIST"-->
+<!--            android:id="@+id/artistName"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="14sp"-->
+<!--            app:layout_constraintTop_toTopOf="@id/songName"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            android:fontFamily="@font/futura_font_family"-->
+<!--            />-->
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/current_song"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        android:paddingLeft="15sp"-->
+<!--        android:layout_margin="20sp"-->
+<!--        android:id="@+id/engine_rpm"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="4500 RPM"-->
+<!--            android:textSize="15sp"-->
+<!--            android:fontFamily="@font/futura_font_family"-->
+<!--            android:textColor="@color/white"/>-->
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="98° F"-->
+<!--            android:textSize="15sp"-->
+<!--            android:fontFamily="@font/futura_font_family"-->
+<!--            android:textColor="@color/white"/>-->
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/engine_rpm"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        android:paddingLeft="15sp"-->
+<!--        android:layout_margin="20sp"-->
+<!--        android:id="@+id/divider"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"-->
+<!--            android:textSize="15sp"-->
+<!--            android:fontFamily="@font/futura_font_family"-->
+<!--            android:textColor="@color/white"/>-->
+
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/divider"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        android:paddingLeft="15sp"-->
+<!--        android:layout_margin="20sp"-->
+<!--        android:id="@+id/speed_limit"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Posted Speed Limit"-->
+<!--            android:textSize="15sp"-->
+<!--            android:fontFamily="@font/futura_font_family"-->
+<!--            android:textColor="@color/white"/>-->
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="                 25"-->
+<!--            android:textSize="15sp"-->
+<!--            android:fontFamily="@font/futura_font_family"-->
+<!--            android:textColor="@color/white"/>-->
+
+<!--    </LinearLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
