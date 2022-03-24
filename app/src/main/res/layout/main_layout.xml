@@ -46,8 +46,29 @@
             android:layout_height="match_parent"
             android:layout_weight="0.3"
             android:id="@+id/left_padding"
-            android:orientation="horizontal"
-            android:background="@drawable/line_design"></LinearLayout>
+            android:orientation="vertical"
+            android:background="@drawable/line_design"
+            android:paddingRight="40dp"
+            android:paddingTop="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="39.12345 N"
+                android:textSize="25sp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:id="@+id/latitude"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="-77.123456 W"
+                android:textSize="25sp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:id="@+id/longitude"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"

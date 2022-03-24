@@ -6,11 +6,13 @@ import android.content.Context;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.headunitapplication.controller.GpsPositionUpdater;
+import com.example.headunitapplication.models.GpsPosition;
 import com.example.headunitapplication.views.MapRotator;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +24,8 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -50,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         requestPermissions(location_permissions, 0);
 
         gpsPositionUpdater = new GpsPositionUpdater();
+        gpsPositionUpdater.registerCallback(new LocationUpdater());
         gpsPositionUpdater.start();
 
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -87,6 +92,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         map.setMyLocationEnabled(true);
+    }
+
+    class LocationUpdater extends CallbackObject<GpsPosition> {
+
+        DecimalFormat decimalFormat = new DecimalFormat("##.000000");
+
+        @Override
+        public void safe_update(GpsPosition pos) {
+            TextView latitudeView = findViewById(R.id.latitude);
+            String northSouth = " N";
+            double lat = pos.getLat();
+            if (lat < 0) {
+                northSouth = " S";
+                lat = Math.abs(lat);
+            }
+            String latString = decimalFormat.format(lat);
+            latitudeView.setText(latString + northSouth);
+
+            TextView longitude = findViewById(R.id.longitude);
+            String eastWest = " E";
+            double lon = pos.getLon();
+            if (lon < 0) {
+                eastWest = " W";
+                lon = Math.abs(lon);
+            }
+            String lonString = decimalFormat.format(lon);
+            longitude.setText(lonString + eastWest);
+        }
     }
 
     /* "Widgets" to have:
