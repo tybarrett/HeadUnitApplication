@@ -2,12 +2,16 @@ package com.example.headunitapplication;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.headunitapplication.controller.GpsPositionUpdater;
+import com.example.headunitapplication.views.MapRotator;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -16,11 +20,14 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final CameraPosition SYDNEY =
-            new CameraPosition.Builder().target(new LatLng(-33.87365, 151.20689))
+//            new CameraPosition.Builder().target(new LatLng(-33.87365, 151.20689))
+            new CameraPosition.Builder().target(new LatLng(39.11543272916332, -77.16574878472404))
                     .zoom(18)
                     .bearing(0)
                     .tilt(45)
@@ -28,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap map;
     private MapRotator mapRotator;
+    private GpsPositionUpdater gpsPositionUpdater;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,6 +48,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         String[] location_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
         requestPermissions(location_permissions, 0);
+
+        gpsPositionUpdater = new GpsPositionUpdater();
+        gpsPositionUpdater.start();
+
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationmanager.requestLocationUpdates(LocationManager.FUSED_PROVIDER, 5000, 10, gpsPositionUpdater);
     }
 
     @SuppressLint("MissingPermission")
@@ -65,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mapRotator = new MapRotator(googleMap);
         mapRotator.start();
-
     }
 
     @SuppressLint("MissingPermission")
@@ -82,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     - Throttle Position
     - Current Gear
     - Vehicle speed
-    - Battery level?
     - Engine temperature?
     - Car Battery level?
     - Current posted limit? (use OSM API)
