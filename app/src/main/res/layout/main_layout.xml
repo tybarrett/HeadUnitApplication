@@ -48,25 +48,33 @@
             android:id="@+id/left_padding"
             android:orientation="vertical"
             android:background="@drawable/line_design"
-            android:paddingRight="40dp"
+            android:paddingRight="60dp"
             android:paddingTop="20dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="39.12345 N"
-                android:textSize="25sp"
+                android:text="N 39° 23.123"
+                android:textSize="27sp"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:id="@+id/latitude"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="-77.123456 W"
-                android:textSize="25sp"
+                android:text="W 77° 23.234"
+                android:textSize="27sp"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:id="@+id/longitude"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Positional Delusion: 0.0m"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:id="@+id/delusion"/>
 
         </LinearLayout>
 

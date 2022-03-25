@@ -96,29 +96,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     class LocationUpdater extends CallbackObject<GpsPosition> {
 
-        DecimalFormat decimalFormat = new DecimalFormat("##.000000");
+        DecimalFormat decimalFormat = new DecimalFormat("00.000");
 
         @Override
         public void safe_update(GpsPosition pos) {
             TextView latitudeView = findViewById(R.id.latitude);
-            String northSouth = " N";
+            String northSouth = "N ";
             double lat = pos.getLat();
             if (lat < 0) {
-                northSouth = " S";
+                northSouth = "S ";
                 lat = Math.abs(lat);
             }
-            String latString = decimalFormat.format(lat);
-            latitudeView.setText(latString + northSouth);
+            int latDegrees = (int) lat;
+            double minutes = (lat % 1.0) * 60.0;
+            String minutesString = decimalFormat.format(minutes);
+            latitudeView.setText(northSouth + latDegrees + "° " + minutesString);
 
             TextView longitude = findViewById(R.id.longitude);
-            String eastWest = " E";
+            String eastWest = "E ";
             double lon = pos.getLon();
             if (lon < 0) {
-                eastWest = " W";
+                eastWest = "W ";
                 lon = Math.abs(lon);
             }
-            String lonString = decimalFormat.format(lon);
-            longitude.setText(lonString + eastWest);
+            int lonDegrees = (int) lon;
+            double lonMinutes = (lon % 1.0) * 60;
+            String lonMinutesString = decimalFormat.format(lonMinutes);
+            longitude.setText(eastWest + lonDegrees + "° " + lonMinutesString);
         }
     }
 
