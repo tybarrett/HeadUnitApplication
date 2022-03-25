@@ -49,13 +49,13 @@
             android:orientation="vertical"
             android:background="@drawable/line_design"
             android:paddingRight="60dp"
-            android:paddingTop="20dp">
+            android:paddingTop="10dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="N 39° 23.123"
-                android:textSize="27sp"
+                android:textSize="23sp"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:id="@+id/latitude"/>
@@ -63,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="W 77° 23.234"
-                android:textSize="27sp"
+                android:textSize="23sp"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:id="@+id/longitude"/>
@@ -75,6 +75,12 @@
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:id="@+id/delusion"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/hazard_lines"/>
 
         </LinearLayout>
 

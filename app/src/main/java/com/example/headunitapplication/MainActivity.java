@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     class LocationUpdater extends CallbackObject<GpsPosition> {
 
         DecimalFormat decimalFormat = new DecimalFormat("00.000");
+        DecimalFormat degreesFormat = new DecimalFormat("000");
 
         @Override
         public void safe_update(GpsPosition pos) {
@@ -108,9 +109,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 lat = Math.abs(lat);
             }
             int latDegrees = (int) lat;
+            String latDegreesString = degreesFormat.format(latDegrees);
             double minutes = (lat % 1.0) * 60.0;
             String minutesString = decimalFormat.format(minutes);
-            latitudeView.setText(northSouth + latDegrees + "° " + minutesString);
+            latitudeView.setText(northSouth + latDegreesString + "° " + minutesString);
 
             TextView longitude = findViewById(R.id.longitude);
             String eastWest = "E ";
@@ -120,9 +122,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 lon = Math.abs(lon);
             }
             int lonDegrees = (int) lon;
+            String lonDegreesString = degreesFormat.format(lonDegrees);
             double lonMinutes = (lon % 1.0) * 60;
             String lonMinutesString = decimalFormat.format(lonMinutes);
-            longitude.setText(eastWest + lonDegrees + "° " + lonMinutesString);
+            longitude.setText(eastWest + lonDegreesString + "° " + lonMinutesString);
         }
     }
 
