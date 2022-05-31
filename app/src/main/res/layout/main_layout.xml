@@ -51,104 +51,179 @@
             android:paddingRight="60dp"
             android:paddingTop="10dp">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="N 39° 23.123"
-                android:textSize="23sp"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:id="@+id/latitude"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="W 77° 23.234"
-                android:textSize="23sp"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:id="@+id/longitude"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Positional Delusion: 0.0m"
-                android:textSize="15sp"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:id="@+id/delusion"/>
+                android:layout_height="0dp"
+                android:layout_weight="90"
+                android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:src="@drawable/hazard_lines"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="N 39° 23.123"
+                    android:textSize="23sp"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:id="@+id/latitude"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="W 77° 23.234"
+                    android:textSize="23sp"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:id="@+id/longitude"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Positional Delusion: 0.0m"
+                    android:textSize="15sp"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:id="@+id/delusion"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/hazard_lines"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_marginRight="0dp"
+                        android:textSize="48sp"
+                        android:textColor="@color/white"
+                        android:text="4"
+                        android:id="@+id/gear"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="10dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="22sp"
+                            android:layout_marginTop="10dp"
+                            android:text="TH"
+                            android:id="@+id/gearSuffix"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-10dp"
+                            android:textColor="@color/white"
+                            android:textSize="22sp"
+                            android:text="GR" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:textSize="48sp"
+                        android:textColor="@color/white"
+                        android:text="56"
+                        android:id="@+id/speed"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="10dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="22sp"
+                            android:layout_marginTop="10dp"
+                            android:text="MI" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-10dp"
+                            android:textColor="@color/white"
+                            android:textSize="22sp"
+                            android:text="HR" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:padding="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="THRTTLE" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50%"
+                        android:textColor="@color/white"
+                        android:layout_gravity="right"/>
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        app:trackThickness="4dp"
+                        app:indicatorColor="@color/white"
+                        android:progress="50"
+                        />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:padding="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="EFFORT" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50%"
+                        android:textColor="@color/white"
+                        android:layout_gravity="right"/>
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        app:trackThickness="4dp"
+                        app:indicatorColor="@color/white"
+                        android:progress="50"
+                        />
+                </FrameLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="20dp">
-
+                android:layout_height="0dp"
+                android:layout_weight="10"
+                android:orientation="vertical">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_marginRight="0dp"
-                    android:textSize="48sp"
+                    android:text="SONG_NAME"
                     android:textColor="@color/white"
-                    android:text="4"
-                    android:id="@+id/gear"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="22sp"
-                        android:layout_marginTop="10dp"
-                        android:text="TH"
-                        android:id="@+id/gearSuffix"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="-10dp"
-                        android:textColor="@color/white"
-                        android:textSize="22sp"
-                        android:text="GR" />
-                </LinearLayout>
+                    android:textSize="24sp"/>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:textSize="48sp"
-                    android:textColor="@color/white"
-                    android:text="56"
-                    android:id="@+id/speed"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="22sp"
-                        android:layout_marginTop="10dp"
-                        android:text="MI" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="-10dp"
-                        android:textColor="@color/white"
-                        android:textSize="22sp"
-                        android:text="HR" />
-                </LinearLayout>
-
+                    android:text="SONG_ARTIST"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
         </LinearLayout>
