@@ -2,15 +2,20 @@ package com.example.headunitapplication;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.headunitapplication.controller.CurrentlyPlayingSong;
 import com.example.headunitapplication.controller.GpsPositionUpdater;
 import com.example.headunitapplication.models.GpsPosition;
 import com.example.headunitapplication.views.MapRotator;
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapRotator mapRotator;
     private GpsPositionUpdater gpsPositionUpdater;
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationmanager.requestLocationUpdates(LocationManager.FUSED_PROVIDER, 5000, 10, gpsPositionUpdater);
+
+        CurrentlyPlayingSong audioUpdater = new CurrentlyPlayingSong();
+        audioUpdater.registerIntentReceiver(this);
     }
 
     @SuppressLint("MissingPermission")
