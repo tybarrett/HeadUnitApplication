@@ -2,6 +2,10 @@ package com.example.headunitapplication;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +20,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.headunitapplication.controller.CurrentlyPlayingSong;
+import com.example.headunitapplication.controller.EngineEffortRpm;
 import com.example.headunitapplication.controller.GpsPositionUpdater;
+import com.example.headunitapplication.controller.ThrottlePosition;
+import com.example.headunitapplication.controller.VehicleSpeed;
 import com.example.headunitapplication.models.GpsPosition;
 import com.example.headunitapplication.views.MapRotator;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,7 +37,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
+import java.util.Set;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -68,6 +79,54 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         CurrentlyPlayingSong audioUpdater = new CurrentlyPlayingSong();
         audioUpdater.registerIntentReceiver(this);
+
+        BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
+        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+        if (!bluetoothAdapter.isEnabled()) {
+            // Device does not support Bluetooth
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+        BluetoothDevice dev = null;
+        for (BluetoothDevice device : pairedDevices) {
+            String deviceName = device.getName();
+            String deviceHardwareAddress = device.getAddress(); // MAC address
+            dev = device;
+            // TODO - save the MAC address of the OBD2 scanner
+        }
+
+        // Lifted from github.com/pires/android-obd-reader. Not sure if applicable for our case.
+        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+        BluetoothSocket sock = null;
+        try {
+            sock = dev.createRfcommSocketToServiceRecord(uuid);
+        } catch (Exception e) {
+            System.err.println("Unable to create Rfcomm socket.");
+            e.printStackTrace();
+        }
+
+        if (sock != null) {
+            try {
+                InputStream is = sock.getInputStream();
+                OutputStream os = sock.getOutputStream();
+
+                VehicleSpeed vehicleSpeed = new VehicleSpeed();
+                vehicleSpeed.setInputStream(is);
+                vehicleSpeed.setOutputStream(os);
+
+                ThrottlePosition throttlePosition = new ThrottlePosition();
+                throttlePosition.setInputStream(is);
+                throttlePosition.setOutputStream(os);
+
+                EngineEffortRpm engineEffortRpm = new EngineEffortRpm();
+                engineEffortRpm.setInputStream(is);
+                engineEffortRpm.setOutputStream(os);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
