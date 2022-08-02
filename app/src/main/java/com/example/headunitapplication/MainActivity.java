@@ -24,6 +24,7 @@ import com.example.headunitapplication.controller.EngineEffortRpm;
 import com.example.headunitapplication.controller.GpsPositionUpdater;
 import com.example.headunitapplication.controller.ThrottlePosition;
 import com.example.headunitapplication.controller.VehicleSpeed;
+import com.example.headunitapplication.models.AudioTrack;
 import com.example.headunitapplication.models.GpsPosition;
 import com.example.headunitapplication.views.MapRotator;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapRotator mapRotator;
     private GpsPositionUpdater gpsPositionUpdater;
 
+    private boolean initialized = false;
+
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,15 +73,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String[] location_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
         requestPermissions(location_permissions, 0);
 
+        if (!initialized) {
+            CurrentlyPlayingSong audioUpdater = new CurrentlyPlayingSong();
+            audioUpdater.registerIntentReceiver(this);
+            audioUpdater.registerCallback(new AudioTrackUpdater());
+            audioUpdater.start();
+
+            initialized = true;
+        }
+
         gpsPositionUpdater = new GpsPositionUpdater();
         gpsPositionUpdater.registerCallback(new LocationUpdater());
         gpsPositionUpdater.start();
 
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationmanager.requestLocationUpdates(LocationManager.FUSED_PROVIDER, 5000, 10, gpsPositionUpdater);
-
-        CurrentlyPlayingSong audioUpdater = new CurrentlyPlayingSong();
-        audioUpdater.registerIntentReceiver(this);
 
         BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
         BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
@@ -194,6 +203,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             double lonMinutes = (lon % 1.0) * 60;
             String lonMinutesString = decimalFormat.format(lonMinutes);
             longitude.setText(eastWest + lonDegreesString + "° " + lonMinutesString);
+        }
+    }
+
+    class AudioTrackUpdater extends CallbackObject<AudioTrack> {
+        @Override
+        public void safe_update(AudioTrack audio) {
+            runOnUiThread(() -> {
+                TextView songName = findViewById(R.id.song_name);
+                songName.setText(audio.getAudio());
+                TextView artistName = findViewById(R.id.song_artist);
+                artistName.setText(audio.getArtist());
+            });
         }
     }
 

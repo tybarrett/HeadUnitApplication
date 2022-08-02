@@ -218,12 +218,14 @@
                     android:layout_height="wrap_content"
                     android:text="SONG_NAME"
                     android:textColor="@color/white"
-                    android:textSize="24sp"/>
+                    android:textSize="24sp"
+                    android:id="@+id/song_name"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="SONG_ARTIST"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:id="@+id/song_artist"/>
             </LinearLayout>
 
         </LinearLayout>

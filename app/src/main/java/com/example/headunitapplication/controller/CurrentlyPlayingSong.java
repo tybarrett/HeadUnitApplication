@@ -19,10 +19,10 @@ public class CurrentlyPlayingSong extends PeriodicComponent {
         this.setIterationPeriodMs(100);
 
         iF = new IntentFilter();
-        iF.addAction("com.android.music.metachanged");
-        iF.addAction("com.android.music.playstatechanged");
-        iF.addAction("com.android.music.playbackcomplete");
-        iF.addAction("com.android.music.queuechanged");
+        iF.addAction("com.spotify.music.metadatachanged");
+        iF.addAction("com.spotify.music.playbackstatechanged");
+        iF.addAction("com.spotify.music.playbackcomplete");
+        iF.addAction("com.spotify.music.queuechanged");
     }
 
     public void registerIntentReceiver(AppCompatActivity activity) {
