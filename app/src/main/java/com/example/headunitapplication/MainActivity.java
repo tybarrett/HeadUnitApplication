@@ -211,9 +211,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void safe_update(AudioTrack audio) {
             runOnUiThread(() -> {
                 TextView songName = findViewById(R.id.song_name);
-                songName.setText(audio.getAudio());
+                String currentText = songName.getText().toString();
+                if (!currentText.equals(audio.getAudio())) {
+                    songName.setText(audio.getAudio());
+                    songName.setSelected(true);
+                }
+
                 TextView artistName = findViewById(R.id.song_artist);
-                artistName.setText(audio.getArtist());
+                String currentArtist = artistName.getText().toString();
+                if (!currentArtist.equals(audio.getArtist())) {
+                    artistName.setText(audio.getArtist());
+                    artistName.setSelected(true);
+                }
             });
         }
     }
