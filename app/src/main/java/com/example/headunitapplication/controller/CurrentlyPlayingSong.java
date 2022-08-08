@@ -16,7 +16,7 @@ public class CurrentlyPlayingSong extends PeriodicComponent {
     private IntentFilter iF;
 
     public CurrentlyPlayingSong() {
-        this.setIterationPeriodMs(100);
+        this.setIterationPeriodMs(500);
 
         iF = new IntentFilter();
         iF.addAction("com.spotify.music.metadatachanged");
@@ -31,6 +31,10 @@ public class CurrentlyPlayingSong extends PeriodicComponent {
 
     @Override
     public Object update() {
+        // For some reason, periodically accessing the BroadcastReceiver allows it to consistently
+        // receive its intents. Otherwise, it will stop receiving them after about 30 seconds.
+        // TODO - determine why this is the case, and fix the root cause.
+        if (mReceiver != null);
         return currentSong;
     }
 
