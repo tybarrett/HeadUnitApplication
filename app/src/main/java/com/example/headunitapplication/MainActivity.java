@@ -203,6 +203,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             double lonMinutes = (lon % 1.0) * 60;
             String lonMinutesString = decimalFormat.format(lonMinutes);
             longitude.setText(eastWest + lonDegreesString + "° " + lonMinutesString);
+
+            TextView delusionText = findViewById(R.id.delusion);
+            String base = "Positional Delusion: ";
+            double delusion = pos.getAccuracy();
+            String delusionString = decimalFormat.format(delusion);
+            delusionText.setText(base + delusionString + "m");
         }
     }
 

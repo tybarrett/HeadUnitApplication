@@ -11,7 +11,8 @@ import java.util.Random;
 
 public class GpsPositionUpdater extends PeriodicComponent implements LocationListener {
 
-    private final static double MAX_LOCATION_NOISE = 0.00002;
+    private final static double MAX_LOCATION_NOISE = 0.0002;
+    private final static double MAX_ACCURACY_NOISE = 0.2;
 
     private double latestLat = 0.0;
     private double latestLon = 0.0;
@@ -28,11 +29,12 @@ public class GpsPositionUpdater extends PeriodicComponent implements LocationLis
     public Object update() {
         if (receivedLocation) {
 
+            // TODO - move this artificial noise into the UI rendering code. 
             double noisyLat = latestLat + (r.nextDouble() * MAX_LOCATION_NOISE);
-
             double noisyLon = latestLon + (r.nextDouble() * MAX_LOCATION_NOISE);
+            double noisyAccuracy = latestAccuracy + (r.nextDouble() * MAX_ACCURACY_NOISE);
 
-            return new GpsPosition(noisyLat, noisyLon, latestAccuracy);
+            return new GpsPosition(noisyLat, noisyLon, noisyAccuracy);
         } else {
             return null;
         }
