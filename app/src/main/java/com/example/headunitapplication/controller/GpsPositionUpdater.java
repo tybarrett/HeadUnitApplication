@@ -29,7 +29,7 @@ public class GpsPositionUpdater extends PeriodicComponent implements LocationLis
     public Object update() {
         if (receivedLocation) {
 
-            // TODO - move this artificial noise into the UI rendering code. 
+            // TODO - move this artificial noise into the UI rendering code.
             double noisyLat = latestLat + (r.nextDouble() * MAX_LOCATION_NOISE);
             double noisyLon = latestLon + (r.nextDouble() * MAX_LOCATION_NOISE);
             double noisyAccuracy = latestAccuracy + (r.nextDouble() * MAX_ACCURACY_NOISE);

@@ -206,6 +206,19 @@
                         android:progress="50"
                         />
                 </FrameLayout>
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/errorBox"
+                        android:textColor="@color/white"
+                        android:text="No errors yet!"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever" />
+                </ScrollView>
             </LinearLayout>
 
             <LinearLayout

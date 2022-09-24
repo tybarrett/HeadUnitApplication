@@ -40,6 +40,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.util.Set;
 import java.util.UUID;
@@ -132,9 +134,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 EngineEffortRpm engineEffortRpm = new EngineEffortRpm();
                 engineEffortRpm.setInputStream(is);
                 engineEffortRpm.setOutputStream(os);
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+
+            throw new Exception("Error on line 147!");
+
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String stackTrace = sw.toString();
+//            remoteErrorLogger.write_log(stackTrace);
+
+            TextView errorOutput = findViewById(R.id.errorBox);
+            errorOutput.setText(stackTrace);
+
+
         }
     }
 
