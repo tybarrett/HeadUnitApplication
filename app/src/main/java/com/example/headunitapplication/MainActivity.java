@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,86 +62,90 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapRotator mapRotator;
     private GpsPositionUpdater gpsPositionUpdater;
 
+    private RemoteErrorLogger remoteErrorLogger;
+
     private boolean initialized = false;
 
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_layout);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        String[] location_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        requestPermissions(location_permissions, 0);
-
-        if (!initialized) {
-            CurrentlyPlayingSong audioUpdater = new CurrentlyPlayingSong();
-            audioUpdater.registerIntentReceiver(this);
-            audioUpdater.registerCallback(new AudioTrackUpdater());
-            audioUpdater.start();
-
-            initialized = true;
-        }
-
-        gpsPositionUpdater = new GpsPositionUpdater();
-        gpsPositionUpdater.registerCallback(new LocationUpdater());
-        gpsPositionUpdater.start();
-
-        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationmanager.requestLocationUpdates(LocationManager.FUSED_PROVIDER, 5000, 10, gpsPositionUpdater);
-
-        BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
-        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-        if (!bluetoothAdapter.isEnabled()) {
-            // Device does not support Bluetooth
-//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
-
-        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-        BluetoothDevice dev = null;
-        for (BluetoothDevice device : pairedDevices) {
-            String deviceName = device.getName();
-            String deviceHardwareAddress = device.getAddress(); // MAC address
-            dev = device;
-            // TODO - save the MAC address of the OBD2 scanner
-        }
-
-        // Lifted from github.com/pires/android-obd-reader. Not sure if applicable for our case.
-        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-        BluetoothSocket sock = null;
+        remoteErrorLogger = new RemoteErrorLogger();
         try {
-            sock = dev.createRfcommSocketToServiceRecord(uuid);
-        } catch (Exception e) {
-            System.err.println("Unable to create Rfcomm socket.");
-            e.printStackTrace();
-        }
 
-        if (sock != null) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.main_layout);
+
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+
+            String[] location_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+            requestPermissions(location_permissions, 0);
+
+            if (!initialized) {
+                CurrentlyPlayingSong audioUpdater = new CurrentlyPlayingSong();
+                audioUpdater.registerIntentReceiver(this);
+                audioUpdater.registerCallback(new AudioTrackUpdater());
+                audioUpdater.start();
+
+                initialized = true;
+            }
+
+            gpsPositionUpdater = new GpsPositionUpdater();
+            gpsPositionUpdater.registerCallback(new LocationUpdater());
+            gpsPositionUpdater.start();
+
+            LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationmanager.requestLocationUpdates(LocationManager.FUSED_PROVIDER, 5000, 10, gpsPositionUpdater);
+
+            BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
+            BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+            if (!bluetoothAdapter.isEnabled()) {
+                // Device does not support Bluetooth
+                //            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                //            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+
+            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+            BluetoothDevice dev = null;
+            for (BluetoothDevice device : pairedDevices) {
+                String deviceName = device.getName();
+                String deviceHardwareAddress = device.getAddress(); // MAC address
+                dev = device;
+                // TODO - save the MAC address of the OBD2 scanner
+            }
+
+            // Lifted from github.com/pires/android-obd-reader. Not sure if applicable for our case.
+            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+            BluetoothSocket sock = null;
             try {
-                InputStream is = sock.getInputStream();
-                OutputStream os = sock.getOutputStream();
+                sock = dev.createRfcommSocketToServiceRecord(uuid);
+            } catch (Exception e) {
+                System.err.println("Unable to create Rfcomm socket.");
+                e.printStackTrace();
+            }
 
-                VehicleSpeed vehicleSpeed = new VehicleSpeed();
-                vehicleSpeed.setInputStream(is);
-                vehicleSpeed.setOutputStream(os);
+            if (sock != null) {
+                try {
+                    InputStream is = sock.getInputStream();
+                    OutputStream os = sock.getOutputStream();
 
-                ThrottlePosition throttlePosition = new ThrottlePosition();
-                throttlePosition.setInputStream(is);
-                throttlePosition.setOutputStream(os);
+                    VehicleSpeed vehicleSpeed = new VehicleSpeed();
+                    vehicleSpeed.setInputStream(is);
+                    vehicleSpeed.setOutputStream(os);
 
-                EngineEffortRpm engineEffortRpm = new EngineEffortRpm();
-                engineEffortRpm.setInputStream(is);
-                engineEffortRpm.setOutputStream(os);
+                    ThrottlePosition throttlePosition = new ThrottlePosition();
+                    throttlePosition.setInputStream(is);
+                    throttlePosition.setOutputStream(os);
+
+                    EngineEffortRpm engineEffortRpm = new EngineEffortRpm();
+                    engineEffortRpm.setInputStream(is);
+                    engineEffortRpm.setOutputStream(os);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-
-            throw new Exception("Error on line 147!");
 
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
@@ -196,36 +202,47 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         public void safe_update(GpsPosition pos) {
             TextView latitudeView = findViewById(R.id.latitude);
-            String northSouth = "N ";
+            final String northSouth;
             double lat = pos.getLat();
             if (lat < 0) {
                 northSouth = "S ";
                 lat = Math.abs(lat);
+            } else {
+                 northSouth = "N ";
             }
             int latDegrees = (int) lat;
             String latDegreesString = degreesFormat.format(latDegrees);
             double minutes = (lat % 1.0) * 60.0;
             String minutesString = decimalFormat.format(minutes);
-            latitudeView.setText(northSouth + latDegreesString + "° " + minutesString);
 
             TextView longitude = findViewById(R.id.longitude);
-            String eastWest = "E ";
+            final String eastWest;
             double lon = pos.getLon();
             if (lon < 0) {
                 eastWest = "W ";
                 lon = Math.abs(lon);
+            } else {
+                eastWest = "E";
             }
+
             int lonDegrees = (int) lon;
             String lonDegreesString = degreesFormat.format(lonDegrees);
             double lonMinutes = (lon % 1.0) * 60;
             String lonMinutesString = decimalFormat.format(lonMinutes);
-            longitude.setText(eastWest + lonDegreesString + "° " + lonMinutesString);
 
             TextView delusionText = findViewById(R.id.delusion);
             String base = "Positional Delusion: ";
             double delusion = pos.getAccuracy();
             String delusionString = decimalFormat.format(delusion);
-            delusionText.setText(base + delusionString + "m");
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    latitudeView.setText(northSouth + latDegreesString + "° " + minutesString);
+                    longitude.setText(eastWest + lonDegreesString + "° " + lonMinutesString);
+                    delusionText.setText(base + delusionString + "m");
+                }
+            });
         }
     }
 

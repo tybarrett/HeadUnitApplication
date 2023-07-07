@@ -1,2 +1,4 @@
-package com.example.headunitapplication;public class DrawMovementPath {
+package com.example.headunitapplication;
+
+public class DrawMovementPath {
 }
