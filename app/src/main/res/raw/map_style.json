@@ -15,28 +15,28 @@
   "featureType": "road.arterial",
   "elementType": "geometry.stroke",
   "stylers": [
-    { "color": "#505050" }
+    { "color": "#a0a0a0" }
   ]
 },
   {
     "featureType": "road.highway",
     "elementType": "geometry.stroke",
     "stylers": [
-      { "color": "#404040" }
+      { "color": "#a0a0a0" }
     ]
   },
   {
     "featureType": "road.local",
     "elementType": "geometry.stroke",
     "stylers": [
-      { "color": "#303030" }
+      { "color": "#a0a0a0" }
     ]
   },
   {
     "featureType": "road",
     "elementType": "geometry.stroke",
     "stylers": [
-      { "color": "#303030" }
+      { "color": "#a0a0a0" }
     ]
   },
   {
