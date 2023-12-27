@@ -99,53 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationmanager.requestLocationUpdates(LocationManager.FUSED_PROVIDER, 5000, 10, gpsPositionUpdater);
 
-            BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
-            BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-            if (!bluetoothAdapter.isEnabled()) {
-                // Device does not support Bluetooth
-                //            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                //            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
 
-            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-            BluetoothDevice dev = null;
-            for (BluetoothDevice device : pairedDevices) {
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
-                dev = device;
-                // TODO - save the MAC address of the OBD2 scanner
-            }
-
-            // Lifted from github.com/pires/android-obd-reader. Not sure if applicable for our case.
-            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-            BluetoothSocket sock = null;
-            try {
-                sock = dev.createRfcommSocketToServiceRecord(uuid);
-            } catch (Exception e) {
-                System.err.println("Unable to create Rfcomm socket.");
-                e.printStackTrace();
-            }
-
-            if (sock != null) {
-                try {
-                    InputStream is = sock.getInputStream();
-                    OutputStream os = sock.getOutputStream();
-
-                    VehicleSpeed vehicleSpeed = new VehicleSpeed();
-                    vehicleSpeed.setInputStream(is);
-                    vehicleSpeed.setOutputStream(os);
-
-                    ThrottlePosition throttlePosition = new ThrottlePosition();
-                    throttlePosition.setInputStream(is);
-                    throttlePosition.setOutputStream(os);
-
-                    EngineEffortRpm engineEffortRpm = new EngineEffortRpm();
-                    engineEffortRpm.setInputStream(is);
-                    engineEffortRpm.setOutputStream(os);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
 
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
