@@ -37,18 +37,17 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
-import java.util.Set;
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    VehicleStatusUpdater vehicleStatusUpdater;
+    EngineEffortRpm engineEffortComponent;
+    ThrottlePosition throttleComponent;
+    VehicleSpeed speedComponent;
 
     public static final CameraPosition SYDNEY =
 //            new CameraPosition.Builder().target(new LatLng(-33.87365, 151.20689))
@@ -88,6 +87,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 audioUpdater.registerIntentReceiver(this);
                 audioUpdater.registerCallback(new AudioTrackUpdater());
                 audioUpdater.start();
+
+                vehicleStatusUpdater = new VehicleStatusUpdater();
+                engineEffortComponent = new EngineEffortRpm(vehicleStatusUpdater);
+                throttleComponent = new ThrottlePosition(vehicleStatusUpdater);
+                speedComponent = new VehicleSpeed(vehicleStatusUpdater);
 
                 initialized = true;
             }

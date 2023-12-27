@@ -10,6 +10,7 @@ public class VehicleStatusUpdater {
     private int rpm = -1;
     private double speed = -1.0;
     private int gear = -1;
+    private double throttle = -1.0;
 
     MulticastReceiver multicastReceiver;
 
@@ -55,6 +56,7 @@ public class VehicleStatusUpdater {
         return gear;
     }
 
-
-
+    public double getThrottle() {
+        return throttle;
+    }
 }
