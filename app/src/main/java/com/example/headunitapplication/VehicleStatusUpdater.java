@@ -1,5 +1,7 @@
 package com.example.headunitapplication;
 
+import android.net.wifi.WifiManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,15 +10,15 @@ import java.util.Locale;
 public class VehicleStatusUpdater {
 
     private int rpm = -1;
-    private double speed = -1.0;
+    private int speed = -1;
     private int gear = -1;
     private double throttle = -1.0;
 
     MulticastReceiver multicastReceiver;
 
     // la de da de da
-    public VehicleStatusUpdater() {
-        multicastReceiver = new MulticastReceiver(new ReceiveDataCallback());
+    public VehicleStatusUpdater(WifiManager wifiManager) {
+        multicastReceiver = new MulticastReceiver(new ReceiveDataCallback(), wifiManager);
     }
 
     class ReceiveDataCallback extends CallbackObject<String> {
@@ -30,9 +32,11 @@ public class VehicleStatusUpdater {
                 if (metricName.equals("RPM")) {
                     rpm = jsonObject.getInt("value");
                 } else if (metricName.equals("SPEED")) {
-                    speed = jsonObject.getDouble("value");
+                    speed = jsonObject.getInt("value");
                 } else if (metricName.equals("GEAR")) {
                     gear = jsonObject.getInt("value");
+                } else if (metricName.equals("THROTTLE")) {
+                    throttle = jsonObject.getDouble("value");
                 } else {
                     System.out.println("Encountered unrecognized metric: " + metricName);
                 }
@@ -48,7 +52,7 @@ public class VehicleStatusUpdater {
         return rpm;
     }
 
-    public double getSpeed() {
+    public int getSpeed() {
         return speed;
     }
 

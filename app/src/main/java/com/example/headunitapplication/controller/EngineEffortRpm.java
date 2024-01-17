@@ -10,6 +10,8 @@ public class EngineEffortRpm extends PeriodicComponent {
     public EngineEffortRpm(VehicleStatusUpdater updater) {
         this.setIterationPeriodMs(200);
         this.updater = updater;
+
+        start();
     }
 
     @Override

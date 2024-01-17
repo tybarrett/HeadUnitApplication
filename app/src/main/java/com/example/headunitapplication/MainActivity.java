@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,6 +26,7 @@ import com.example.headunitapplication.controller.CurrentlyPlayingSong;
 import com.example.headunitapplication.controller.EngineEffortRpm;
 import com.example.headunitapplication.controller.GpsPositionUpdater;
 import com.example.headunitapplication.controller.ThrottlePosition;
+import com.example.headunitapplication.controller.VehicleGear;
 import com.example.headunitapplication.controller.VehicleSpeed;
 import com.example.headunitapplication.models.AudioTrack;
 import com.example.headunitapplication.models.GpsPosition;
@@ -37,6 +39,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     EngineEffortRpm engineEffortComponent;
     ThrottlePosition throttleComponent;
     VehicleSpeed speedComponent;
+    VehicleGear gearComponent;
 
     public static final CameraPosition SYDNEY =
 //            new CameraPosition.Builder().target(new LatLng(-33.87365, 151.20689))
@@ -88,10 +92,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 audioUpdater.registerCallback(new AudioTrackUpdater());
                 audioUpdater.start();
 
-                vehicleStatusUpdater = new VehicleStatusUpdater();
+                WifiManager wifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+                vehicleStatusUpdater = new VehicleStatusUpdater(wifiManager);
+
                 engineEffortComponent = new EngineEffortRpm(vehicleStatusUpdater);
+                engineEffortComponent.registerCallback(new EffortUpdater());
+
                 throttleComponent = new ThrottlePosition(vehicleStatusUpdater);
+                throttleComponent.registerCallback(new ThrottleUpdater());
+
                 speedComponent = new VehicleSpeed(vehicleStatusUpdater);
+                speedComponent.registerCallback(new SpeedUpdater());
+
+                gearComponent = new VehicleGear(vehicleStatusUpdater);
+                gearComponent.registerCallback(new GearUpdater());
 
                 initialized = true;
             }
@@ -199,6 +213,65 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     latitudeView.setText(northSouth + latDegreesString + "° " + minutesString);
                     longitude.setText(eastWest + lonDegreesString + "° " + lonMinutesString);
                     delusionText.setText(base + delusionString + "m");
+                }
+            });
+        }
+    }
+
+    class SpeedUpdater extends CallbackObject<Integer> {
+        @Override
+        public void safe_update(Integer newSpeed) {
+            runOnUiThread(() -> {
+                TextView speedText = findViewById(R.id.speed);
+                speedText.setText(String.valueOf(newSpeed));
+            });
+        }
+    }
+
+    class ThrottleUpdater extends CallbackObject<Double> {
+        private double MAX_THROTTLE = 100.0;
+        @Override
+        public void safe_update(Double newThrottle) {
+            runOnUiThread(() -> {
+                TextView throttleText = findViewById(R.id.throttle_percentage);
+                int throttle_percent = (int) (100 * newThrottle / MAX_THROTTLE);
+                throttleText.setText(String.format("%s%%", throttle_percent));
+                LinearProgressIndicator effortProgressBar = findViewById(R.id.throttle_progress_bar);
+                effortProgressBar.setProgress(throttle_percent);
+                throttleText.setText(String.valueOf(newThrottle));
+            });
+        }
+    }
+
+    class EffortUpdater extends CallbackObject<Integer> {
+        public int MAX_EFFORT_LEVEL = 9000;
+        @Override
+        public void safe_update(Integer newEffort) {
+            runOnUiThread(() -> {
+                TextView effortText = findViewById(R.id.effort_percentage);
+                int effort_percent = 100 * newEffort / MAX_EFFORT_LEVEL;
+                effortText.setText(String.format("%s%%", effort_percent));
+                LinearProgressIndicator effortProgressBar = findViewById(R.id.effort_progress_bar);
+                effortProgressBar.setProgress(effort_percent);
+            });
+        }
+    }
+
+    class GearUpdater extends CallbackObject<Integer> {
+        @Override
+        public void safe_update(Integer newGear) {
+            runOnUiThread(() -> {
+                TextView gearText = findViewById(R.id.gear);
+                TextView gearSuffix = findViewById(R.id.gearSuffix);
+                gearText.setText(String.valueOf(newGear));
+                if (newGear == 1) {
+                    gearSuffix.setText("ST");
+                } else if (newGear == 2) {
+                    gearSuffix.setText("ND");
+                } else if (newGear == 3) {
+                    gearSuffix.setText("RD");
+                } else {
+                    gearSuffix.setText("TH");
                 }
             });
         }

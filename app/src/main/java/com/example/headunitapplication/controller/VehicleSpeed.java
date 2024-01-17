@@ -10,6 +10,8 @@ public class VehicleSpeed extends PeriodicComponent {
     public VehicleSpeed(VehicleStatusUpdater updater) {
         this.setIterationPeriodMs(200);
         this.updater = updater;
+
+        this.start();
     }
 
     @Override
