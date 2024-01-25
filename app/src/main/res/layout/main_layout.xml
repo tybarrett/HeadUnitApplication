@@ -167,12 +167,14 @@
                         android:textColor="@color/white"
                         android:text="THROTTLE" />
                     <TextView
+                        android:id="@+id/throttle_percentage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="50%"
                         android:textColor="@color/white"
                         android:layout_gravity="right"/>
                     <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/throttle_progress_bar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="25dp"
@@ -192,12 +194,14 @@
                         android:textColor="@color/white"
                         android:text="EFFORT" />
                     <TextView
+                        android:id="@+id/effort_percentage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="50%"
                         android:textColor="@color/white"
                         android:layout_gravity="right"/>
                     <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/effort_progress_bar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="25dp"

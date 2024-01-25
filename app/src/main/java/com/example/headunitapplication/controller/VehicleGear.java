@@ -3,10 +3,11 @@ package com.example.headunitapplication.controller;
 import com.example.headunitapplication.VehicleStatusUpdater;
 
 
-public class ThrottlePosition extends PeriodicComponent {
+public class VehicleGear extends PeriodicComponent {
+
     VehicleStatusUpdater updater;
 
-    public ThrottlePosition(VehicleStatusUpdater updater) {
+    public VehicleGear(VehicleStatusUpdater updater) {
         this.setIterationPeriodMs(200);
         this.updater = updater;
 
@@ -15,6 +16,6 @@ public class ThrottlePosition extends PeriodicComponent {
 
     @Override
     public Object update() {
-        return updater.getThrottle();
+        return updater.getGear();
     }
 }
