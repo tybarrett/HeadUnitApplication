@@ -30,6 +30,8 @@ import com.example.headunitapplication.controller.VehicleGear;
 import com.example.headunitapplication.controller.VehicleSpeed;
 import com.example.headunitapplication.models.AudioTrack;
 import com.example.headunitapplication.models.GpsPosition;
+import com.example.headunitapplication.uicomponents.ThrottleView;
+import com.example.headunitapplication.uicomponents.ThrottleViewController;
 import com.example.headunitapplication.views.MapRotator;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     ThrottlePosition throttleComponent;
     VehicleSpeed speedComponent;
     VehicleGear gearComponent;
+
+    ThrottleViewController throttle;
 
     public static final CameraPosition SYDNEY =
 //            new CameraPosition.Builder().target(new LatLng(-33.87365, 151.20689))
@@ -86,28 +90,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             String[] location_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
             requestPermissions(location_permissions, 0);
 
+            
+
             if (!initialized) {
-                CurrentlyPlayingSong audioUpdater = new CurrentlyPlayingSong();
-                audioUpdater.registerIntentReceiver(this);
-                audioUpdater.registerCallback(new AudioTrackUpdater());
-                audioUpdater.start();
+                throttle = new ThrottleViewController(findViewById(R.id.throttle_layout));
+                throttle.listenToRoom(backend.getRoom("THROTTLE"));
 
-                WifiManager wifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-                vehicleStatusUpdater = new VehicleStatusUpdater(wifiManager);
-
-                engineEffortComponent = new EngineEffortRpm(vehicleStatusUpdater);
-                engineEffortComponent.registerCallback(new EffortUpdater());
-
-                throttleComponent = new ThrottlePosition(vehicleStatusUpdater);
-                throttleComponent.registerCallback(new ThrottleUpdater());
-
-                speedComponent = new VehicleSpeed(vehicleStatusUpdater);
-                speedComponent.registerCallback(new SpeedUpdater());
-
-                gearComponent = new VehicleGear(vehicleStatusUpdater);
-                gearComponent.registerCallback(new GearUpdater());
-
-                initialized = true;
+//                CurrentlyPlayingSong audioUpdater = new CurrentlyPlayingSong();
+//                audioUpdater.registerIntentReceiver(this);
+//                audioUpdater.registerCallback(new AudioTrackUpdater());
+//                audioUpdater.start();
+//
+//                WifiManager wifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+//                vehicleStatusUpdater = new VehicleStatusUpdater(wifiManager);
+//
+//                engineEffortComponent = new EngineEffortRpm(vehicleStatusUpdater);
+//                engineEffortComponent.registerCallback(new EffortUpdater());
+//
+//                throttleComponent = new ThrottlePosition(vehicleStatusUpdater);
+//                throttleComponent.registerCallback(new ThrottleUpdater());
+//
+//                speedComponent = new VehicleSpeed(vehicleStatusUpdater);
+//                speedComponent.registerCallback(new SpeedUpdater());
+//
+//                gearComponent = new VehicleGear(vehicleStatusUpdater);
+//                gearComponent.registerCallback(new GearUpdater());
+//
+//                initialized = true;
             }
 
             gpsPositionUpdater = new GpsPositionUpdater();
@@ -224,21 +233,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             runOnUiThread(() -> {
                 TextView speedText = findViewById(R.id.speed);
                 speedText.setText(String.valueOf(newSpeed));
-            });
-        }
-    }
-
-    class ThrottleUpdater extends CallbackObject<Double> {
-        private double MAX_THROTTLE = 100.0;
-        @Override
-        public void safe_update(Double newThrottle) {
-            runOnUiThread(() -> {
-                TextView throttleText = findViewById(R.id.throttle_percentage);
-                int throttle_percent = (int) (100 * newThrottle / MAX_THROTTLE);
-                throttleText.setText(String.format("%s%%", throttle_percent));
-                LinearProgressIndicator effortProgressBar = findViewById(R.id.throttle_progress_bar);
-                effortProgressBar.setProgress(throttle_percent);
-                throttleText.setText(String.valueOf(newThrottle));
             });
         }
     }
