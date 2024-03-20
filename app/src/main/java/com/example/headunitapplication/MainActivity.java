@@ -215,6 +215,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     delusionText.setText(base + delusionString + "m");
                 }
             });
+
+            CameraPosition cp = new CameraPosition.Builder().target(new LatLng(pos.getLat(), pos.getLon()))
+                    .zoom(18)
+                    .bearing(0)
+                    .tilt(45)
+                    .build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
         }
     }
 
