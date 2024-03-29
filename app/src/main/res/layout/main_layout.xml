@@ -232,7 +232,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/errorBox"
                         android:textColor="@color/white"
-                        android:text="No errors yet!"
+                        android:text=""
                         android:ellipsize="marquee"
                         android:marqueeRepeatLimit="marquee_forever" />
                 </ScrollView>
@@ -246,7 +246,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="SONG_NAME"
+                    android:text=""
                     android:textColor="@color/white"
                     android:textSize="24sp"
                     android:ellipsize="marquee"
@@ -257,7 +257,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="SONG_ARTIST"
+                    android:text=""
                     android:textColor="@color/white"
                     android:ellipsize="marquee"
                     android:marqueeRepeatLimit="marquee_forever"
