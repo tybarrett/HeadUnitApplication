@@ -3,7 +3,6 @@ package com.example.headunitapplication.uicomponents;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.headunitapplication.CallbackObject;
 import com.example.headunitapplication.R;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 

@@ -5,9 +5,11 @@ import android.net.wifi.WifiManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
-public class VehicleStatusUpdater {
+public class VehicleStatusUpdater extends CommunicationBackhaul {
 
     private int rpm = -1;
     private int speed = -1;
@@ -16,7 +18,6 @@ public class VehicleStatusUpdater {
 
     MulticastReceiver multicastReceiver;
 
-    // la de da de da
     public VehicleStatusUpdater(WifiManager wifiManager) {
         multicastReceiver = new MulticastReceiver(new ReceiveDataCallback(), wifiManager);
     }
@@ -25,18 +26,21 @@ public class VehicleStatusUpdater {
         @Override
         public void safe_update(String receivedData) {
             try {
-                JSONObject jsonObject = null;
-                jsonObject = new JSONObject(receivedData);
+                JSONObject jsonObject = new JSONObject(receivedData);
                 String metricName = jsonObject.getString("metricName");
                 metricName = metricName.toUpperCase(Locale.ROOT);
                 if (metricName.equals("RPM")) {
                     rpm = jsonObject.getInt("value");
+                    sendToRoom("RPM", rpm);
                 } else if (metricName.equals("SPEED")) {
                     speed = jsonObject.getInt("value");
+                    sendToRoom("SPEED", speed);
                 } else if (metricName.equals("GEAR")) {
                     gear = jsonObject.getInt("value");
+                    sendToRoom("GEAR", gear);
                 } else if (metricName.equals("THROTTLE")) {
                     throttle = jsonObject.getDouble("value");
+                    sendToRoom("THROTTLE", throttle);
                 } else {
                     System.out.println("Encountered unrecognized metric: " + metricName);
                 }

@@ -83,7 +83,8 @@
                     android:id="@+id/delusion"/>
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:scaleType="fitXY"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:src="@drawable/hazard_lines"/>
@@ -92,67 +93,77 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingLeft="20dp">
+                    android:gravity="center">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:layout_marginRight="0dp"
-                        android:textSize="48sp"
-                        android:textColor="@color/white"
-                        android:text="4"
-                        android:id="@+id/gear"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="10dp">
+                        android:id="@+id/gear_layout">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:layout_marginRight="0dp"
+                            android:textSize="48sp"
                             android:textColor="@color/white"
-                            android:textSize="22sp"
-                            android:layout_marginTop="10dp"
-                            android:text="TH"
-                            android:id="@+id/gearSuffix"/>
-                        <TextView
+                            android:text="4"
+                            android:id="@+id/gear"/>
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="-10dp"
-                            android:textColor="@color/white"
-                            android:textSize="22sp"
-                            android:text="GR" />
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="10dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="22sp"
+                                android:layout_marginTop="10dp"
+                                android:text="TH"
+                                android:id="@+id/gearSuffix"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-10dp"
+                                android:textColor="@color/white"
+                                android:textSize="22sp"
+                                android:text="GR" />
+                        </LinearLayout>
                     </LinearLayout>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:textSize="48sp"
-                        android:textColor="@color/white"
-                        android:text="56"
-                        android:id="@+id/speed"/>
                     <LinearLayout
+                        android:id="@+id/speed_layout"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="10dp">
+                        android:layout_height="match_parent">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:textSize="48sp"
                             android:textColor="@color/white"
-                            android:textSize="22sp"
-                            android:layout_marginTop="10dp"
-                            android:text="MI" />
-                        <TextView
+                            android:text="56"
+                            android:id="@+id/speed"/>
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="-10dp"
-                            android:textColor="@color/white"
-                            android:textSize="22sp"
-                            android:text="HR" />
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="10dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="22sp"
+                                android:layout_marginTop="10dp"
+                                android:text="MI" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-10dp"
+                                android:textColor="@color/white"
+                                android:textSize="22sp"
+                                android:text="HR" />
+                        </LinearLayout>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -186,6 +197,7 @@
                 </FrameLayout>
 
                 <FrameLayout
+                    android:id="@+id/effort_layout"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:padding="10dp">
