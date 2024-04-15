@@ -40,7 +40,7 @@ public class VehicleStatusUpdater {
                 } else {
                     System.out.println("Encountered unrecognized metric: " + metricName);
                 }
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 System.out.println("Encountered a JSONException with the following received String:");
                 System.out.println(receivedData);
                 e.printStackTrace();

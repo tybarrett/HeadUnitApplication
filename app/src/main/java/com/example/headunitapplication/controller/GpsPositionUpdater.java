@@ -34,7 +34,7 @@ public class GpsPositionUpdater extends PeriodicComponent implements LocationLis
             double noisyLon = latestLon + (r.nextDouble() * MAX_LOCATION_NOISE);
             double noisyAccuracy = latestAccuracy + (r.nextDouble() * MAX_ACCURACY_NOISE);
 
-            return new GpsPosition(noisyLat, noisyLon, noisyAccuracy);
+            return new GpsPosition(latestLat, latestLon, noisyAccuracy);
         } else {
             return null;
         }
