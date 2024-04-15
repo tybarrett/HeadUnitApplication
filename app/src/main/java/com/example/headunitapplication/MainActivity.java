@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -37,9 +38,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
@@ -184,6 +190,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         DecimalFormat decimalFormat = new DecimalFormat("00.000");
         DecimalFormat degreesFormat = new DecimalFormat("000");
 
+        Circle currentPosition = null;
+
         @Override
         public void safe_update(GpsPosition pos) {
             double MAX_LOCATION_NOISE = 0.0002;
@@ -239,15 +247,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 .tilt(45)
                                 .build();
                     map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
+
+                    if (currentPosition == null) {
+                        currentPosition = map.addCircle(new CircleOptions().center(new LatLng(pos.getLat(), pos.getLon())).
+                                radius(4).strokeWidth(4).strokeColor(Color.WHITE).fillColor(Color.argb(128, 255, 255, 255)));
+                    } else {
+                        currentPosition.setCenter(new LatLng(pos.getLat(), pos.getLon()));
+                    }
                 }
             });
-
-//            CameraPosition cp = new CameraPosition.Builder().target(new LatLng(pos.getLat(), pos.getLon()))
-//                    .zoom(18)
-//                    .bearing(0)
-//                    .tilt(45)
-//                    .build();
-//            map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
         }
     }
 
