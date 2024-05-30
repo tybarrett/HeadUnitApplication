@@ -13,6 +13,7 @@ public class VehicleStatusUpdater {
     private int speed = -1;
     private int gear = -1;
     private double throttle = -1.0;
+    private long lastHeartbeatTime = -1;
 
     MulticastReceiver multicastReceiver;
 
@@ -37,6 +38,8 @@ public class VehicleStatusUpdater {
                     gear = jsonObject.getInt("value");
                 } else if (metricName.equals("THROTTLE")) {
                     throttle = jsonObject.getDouble("value");
+                } else if (metricName.equals("heartbeat")) {
+                    lastHeartbeatTime = System.currentTimeMillis();
                 } else {
                     System.out.println("Encountered unrecognized metric: " + metricName);
                 }
@@ -62,5 +65,9 @@ public class VehicleStatusUpdater {
 
     public double getThrottle() {
         return throttle;
+    }
+
+    public long getLastHeartbeatTime() {
+        return lastHeartbeatTime;
     }
 }

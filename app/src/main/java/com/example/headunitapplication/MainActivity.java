@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.headunitapplication.controller.CurrentlyPlayingSong;
 import com.example.headunitapplication.controller.EngineEffortRpm;
 import com.example.headunitapplication.controller.GpsPositionUpdater;
+import com.example.headunitapplication.controller.TelemetryStatus;
 import com.example.headunitapplication.controller.ThrottlePosition;
 import com.example.headunitapplication.controller.VehicleGear;
 import com.example.headunitapplication.controller.VehicleSpeed;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     ThrottlePosition throttleComponent;
     VehicleSpeed speedComponent;
     VehicleGear gearComponent;
+    TelemetryStatus telemetryStatus;
 
     public static final CameraPosition SYDNEY =
 //            new CameraPosition.Builder().target(new LatLng(-33.87365, 151.20689))
@@ -116,6 +118,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 gearComponent = new VehicleGear(vehicleStatusUpdater);
                 gearComponent.registerCallback(new GearUpdater());
+
+                telemetryStatus = new TelemetryStatus(vehicleStatusUpdater);
+                telemetryStatus.registerCallback(new TelemetryUpdater());
 
                 initialized = true;
             }
@@ -313,6 +318,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     gearSuffix.setText("RD");
                 } else {
                     gearSuffix.setText("TH");
+                }
+            });
+        }
+    }
+
+    class TelemetryUpdater extends CallbackObject<Long> {
+        @Override
+        public void safe_update(Long lastHeartbeatTime) {
+            runOnUiThread(() -> {
+                TextView onlineText = findViewById(R.id.telemetry_status);
+                if (lastHeartbeatTime == -1) {
+                    onlineText.setText("OFFLINE");
+                }
+                long currTime = System.currentTimeMillis();
+                long elapsedTime = currTime - lastHeartbeatTime;
+                if (elapsedTime > 2000) {
+                    onlineText.setText("LAGGING");
+                } else {
+                    onlineText.setText("ONLINE");
                 }
             });
         }

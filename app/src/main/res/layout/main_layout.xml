@@ -212,6 +212,24 @@
                         />
                 </FrameLayout>
 
+                <FrameLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:padding="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="TELEMETRY COMPUTER" />
+                    <TextView
+                        android:id="@+id/telemetry_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OFFLINE"
+                        android:textColor="@color/white"
+                        android:layout_gravity="right"/>
+                </FrameLayout>
+
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -220,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/errorBox"
                         android:textColor="@color/white"
-                        android:text="No errors yet!"
+                        android:text=""
                         android:ellipsize="marquee"
                         android:marqueeRepeatLimit="marquee_forever" />
                 </ScrollView>
