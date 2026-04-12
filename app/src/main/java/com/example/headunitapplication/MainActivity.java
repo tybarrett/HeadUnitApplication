@@ -10,8 +10,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,11 +22,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.headunitapplication.controller.CurrentlyPlayingSong;
 import com.example.headunitapplication.controller.EngineEffortRpm;
 import com.example.headunitapplication.controller.GpsPositionUpdater;
+import com.example.headunitapplication.controller.TelemetryStatus;
 import com.example.headunitapplication.controller.ThrottlePosition;
 import com.example.headunitapplication.controller.VehicleGear;
 import com.example.headunitapplication.controller.VehicleSpeed;
@@ -35,15 +39,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -52,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     ThrottlePosition throttleComponent;
     VehicleSpeed speedComponent;
     VehicleGear gearComponent;
+    TelemetryStatus telemetryStatus;
 
     public static final CameraPosition SYDNEY =
 //            new CameraPosition.Builder().target(new LatLng(-33.87365, 151.20689))
@@ -69,11 +80,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private boolean initialized = false;
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-        remoteErrorLogger = new RemoteErrorLogger();
+//        remoteErrorLogger = new RemoteErrorLogger();
         try {
 
             super.onCreate(savedInstanceState);
@@ -83,15 +95,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
 
-            String[] location_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-            requestPermissions(location_permissions, 0);
+//            String[] location_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+//            requestPermissions(location_permissions, 0);
 
             if (!initialized) {
                 CurrentlyPlayingSong audioUpdater = new CurrentlyPlayingSong();
                 audioUpdater.registerIntentReceiver(this);
                 audioUpdater.registerCallback(new AudioTrackUpdater());
                 audioUpdater.start();
-
+//
                 WifiManager wifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
                 vehicleStatusUpdater = new VehicleStatusUpdater(wifiManager);
 
@@ -107,6 +119,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 gearComponent = new VehicleGear(vehicleStatusUpdater);
                 gearComponent.registerCallback(new GearUpdater());
 
+                telemetryStatus = new TelemetryStatus(vehicleStatusUpdater);
+                telemetryStatus.registerCallback(new TelemetryUpdater());
+
                 initialized = true;
             }
 
@@ -115,9 +130,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             gpsPositionUpdater.start();
 
             LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationmanager.requestLocationUpdates(LocationManager.FUSED_PROVIDER, 5000, 10, gpsPositionUpdater);
-
-
+            locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 250, 10, gpsPositionUpdater);
 
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
@@ -136,26 +149,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
-        boolean success = googleMap.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                        this, R.raw.map_style));
-        googleMap.setIndoorEnabled(false);
-        googleMap.setBuildingsEnabled(false);
-        googleMap.getUiSettings().setCompassEnabled(false);
+        try {
+            map = googleMap;
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.map_style));
+            googleMap.setIndoorEnabled(false);
+            googleMap.setBuildingsEnabled(false);
+            googleMap.getUiSettings().setCompassEnabled(false);
 
-        if (!success) {
-            System.err.println("Unable to parse style JSON.");
+            if (!success) {
+                System.err.println("Unable to parse style JSON.");
+            }
+
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(0, 0))
+                    .title("Marker"));
+
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(SYDNEY));
+
+            mapRotator = new MapRotator(googleMap);
+//            mapRotator.start();
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String stackTrace = sw.toString();
+//            remoteErrorLogger.write_log(stackTrace);
+
+            TextView errorOutput = findViewById(R.id.errorBox);
+            errorOutput.setText(stackTrace);
         }
-
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(0, 0))
-                .title("Marker"));
-
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(SYDNEY));
-
-        mapRotator = new MapRotator(googleMap);
-        mapRotator.start();
     }
 
     @SuppressLint("MissingPermission")
@@ -171,16 +195,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         DecimalFormat decimalFormat = new DecimalFormat("00.000");
         DecimalFormat degreesFormat = new DecimalFormat("000");
 
+        Circle currentPosition = null;
+
         @Override
         public void safe_update(GpsPosition pos) {
+            double MAX_LOCATION_NOISE = 0.0002;
+
+            double lat = pos.getLat();
+            double lon = pos.getLon();
+            Random r = new Random();
+            lat = lat + (r.nextDouble() * MAX_LOCATION_NOISE);
+            lon = lon + (r.nextDouble() * MAX_LOCATION_NOISE);
+
             TextView latitudeView = findViewById(R.id.latitude);
             final String northSouth;
-            double lat = pos.getLat();
             if (lat < 0) {
                 northSouth = "S ";
                 lat = Math.abs(lat);
             } else {
-                 northSouth = "N ";
+                northSouth = "N ";
             }
             int latDegrees = (int) lat;
             String latDegreesString = degreesFormat.format(latDegrees);
@@ -189,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             TextView longitude = findViewById(R.id.longitude);
             final String eastWest;
-            double lon = pos.getLon();
             if (lon < 0) {
                 eastWest = "W ";
                 lon = Math.abs(lon);
@@ -213,15 +245,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     latitudeView.setText(northSouth + latDegreesString + "° " + minutesString);
                     longitude.setText(eastWest + lonDegreesString + "° " + lonMinutesString);
                     delusionText.setText(base + delusionString + "m");
+
+                    CameraPosition cp = new CameraPosition.Builder().target(new LatLng(pos.getLat(), pos.getLon()))
+                                .zoom(18)
+                                .bearing(0)
+                                .tilt(45)
+                                .build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
+
+                    if (currentPosition == null) {
+                        currentPosition = map.addCircle(new CircleOptions().center(new LatLng(pos.getLat(), pos.getLon())).
+                                radius(4).strokeWidth(4).strokeColor(Color.WHITE).fillColor(Color.argb(128, 255, 255, 255)));
+                    } else {
+                        currentPosition.setCenter(new LatLng(pos.getLat(), pos.getLon()));
+                    }
                 }
             });
-
-            CameraPosition cp = new CameraPosition.Builder().target(new LatLng(pos.getLat(), pos.getLon()))
-                    .zoom(18)
-                    .bearing(0)
-                    .tilt(45)
-                    .build();
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
         }
     }
 
@@ -236,16 +275,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     class ThrottleUpdater extends CallbackObject<Double> {
-        private double MAX_THROTTLE = 100.0;
+        private final double MAX_THROTTLE = 100.0;
         @Override
         public void safe_update(Double newThrottle) {
             runOnUiThread(() -> {
+                DecimalFormat decimalFormat = new DecimalFormat("###.000");
+                String throttleString = decimalFormat.format(newThrottle);
                 TextView throttleText = findViewById(R.id.throttle_percentage);
                 int throttle_percent = (int) (100 * newThrottle / MAX_THROTTLE);
                 throttleText.setText(String.format("%s%%", throttle_percent));
                 LinearProgressIndicator effortProgressBar = findViewById(R.id.throttle_progress_bar);
                 effortProgressBar.setProgress(throttle_percent);
-                throttleText.setText(String.valueOf(newThrottle));
+                throttleText.setText(new StringBuilder().append(throttleString).append("%").toString());
             });
         }
     }
@@ -257,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             runOnUiThread(() -> {
                 TextView effortText = findViewById(R.id.effort_percentage);
                 int effort_percent = 100 * newEffort / MAX_EFFORT_LEVEL;
-                effortText.setText(String.format("%s%%", effort_percent));
+                effortText.setText(newEffort.toString());
                 LinearProgressIndicator effortProgressBar = findViewById(R.id.effort_progress_bar);
                 effortProgressBar.setProgress(effort_percent);
             });
@@ -280,6 +321,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } else {
                     gearSuffix.setText("TH");
                 }
+            });
+        }
+    }
+
+    class TelemetryUpdater extends CallbackObject<Long> {
+        @Override
+        public void safe_update(Long lastHeartbeatTime) {
+            runOnUiThread(() -> {
+                TextView onlineText = findViewById(R.id.telemetry_status);
+                if (lastHeartbeatTime.equals(new Long(-1))) {
+                    onlineText.setText("OFFLINE");
+                }
+                long currTime = System.currentTimeMillis();
+                long elapsedTime = currTime - lastHeartbeatTime;
+                if (elapsedTime > 10000) {
+                    onlineText.setText("OFFLINE");
+                } else if (elapsedTime > 4000) {
+                    onlineText.setText("LAGGING");
+                } else {
+                    onlineText.setText("ONLINE");
+                }
+//                onlineText.setText(String.valueOf(lastHeartbeatTime));
             });
         }
     }

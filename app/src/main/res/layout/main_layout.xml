@@ -83,7 +83,8 @@
                     android:id="@+id/delusion"/>
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:scaleType="fitXY"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:src="@drawable/hazard_lines"/>
@@ -92,7 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingLeft="20dp">
+                    android:gravity="center">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -211,6 +212,24 @@
                         />
                 </FrameLayout>
 
+                <FrameLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:padding="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="TELEMETRY COMPUTER" />
+                    <TextView
+                        android:id="@+id/telemetry_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OFFLINE"
+                        android:textColor="@color/white"
+                        android:layout_gravity="right"/>
+                </FrameLayout>
+
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -219,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/errorBox"
                         android:textColor="@color/white"
-                        android:text="No errors yet!"
+                        android:text=""
                         android:ellipsize="marquee"
                         android:marqueeRepeatLimit="marquee_forever" />
                 </ScrollView>
@@ -229,7 +248,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="10"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
