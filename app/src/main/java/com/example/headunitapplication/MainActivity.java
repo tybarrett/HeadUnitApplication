@@ -279,12 +279,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         public void safe_update(Double newThrottle) {
             runOnUiThread(() -> {
+                DecimalFormat decimalFormat = new DecimalFormat("###.000");
+                String throttleString = decimalFormat.format(newThrottle);
                 TextView throttleText = findViewById(R.id.throttle_percentage);
                 int throttle_percent = (int) (100 * newThrottle / MAX_THROTTLE);
                 throttleText.setText(String.format("%s%%", throttle_percent));
                 LinearProgressIndicator effortProgressBar = findViewById(R.id.throttle_progress_bar);
                 effortProgressBar.setProgress(throttle_percent);
-                throttleText.setText(String.valueOf(newThrottle));
+                throttleText.setText(new StringBuilder().append(throttleString).append("%").toString());
             });
         }
     }
@@ -296,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             runOnUiThread(() -> {
                 TextView effortText = findViewById(R.id.effort_percentage);
                 int effort_percent = 100 * newEffort / MAX_EFFORT_LEVEL;
-                effortText.setText(String.format("%s%%", effort_percent));
+                effortText.setText(newEffort.toString());
                 LinearProgressIndicator effortProgressBar = findViewById(R.id.effort_progress_bar);
                 effortProgressBar.setProgress(effort_percent);
             });
@@ -328,16 +330,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void safe_update(Long lastHeartbeatTime) {
             runOnUiThread(() -> {
                 TextView onlineText = findViewById(R.id.telemetry_status);
-                if (lastHeartbeatTime == -1) {
+                if (lastHeartbeatTime.equals(new Long(-1))) {
                     onlineText.setText("OFFLINE");
                 }
                 long currTime = System.currentTimeMillis();
                 long elapsedTime = currTime - lastHeartbeatTime;
-                if (elapsedTime > 2000) {
+                if (elapsedTime > 10000) {
+                    onlineText.setText("OFFLINE");
+                } else if (elapsedTime > 4000) {
                     onlineText.setText("LAGGING");
                 } else {
                     onlineText.setText("ONLINE");
                 }
+//                onlineText.setText(String.valueOf(lastHeartbeatTime));
             });
         }
     }

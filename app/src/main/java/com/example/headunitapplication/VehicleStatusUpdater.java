@@ -38,7 +38,7 @@ public class VehicleStatusUpdater {
                     gear = jsonObject.getInt("value");
                 } else if (metricName.equals("THROTTLE")) {
                     throttle = jsonObject.getDouble("value");
-                } else if (metricName.equals("heartbeat")) {
+                } else if (metricName.equals("HEARTBEAT")) {
                     lastHeartbeatTime = System.currentTimeMillis();
                 } else {
                     System.out.println("Encountered unrecognized metric: " + metricName);
