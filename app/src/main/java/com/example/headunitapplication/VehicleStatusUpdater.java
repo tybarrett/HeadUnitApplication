@@ -2,9 +2,12 @@ package com.example.headunitapplication;
 
 import android.net.wifi.WifiManager;
 
+import com.example.headunitapplication.models.AudioTrack;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
 import java.util.Locale;
 
 public class VehicleStatusUpdater {
@@ -15,9 +18,10 @@ public class VehicleStatusUpdater {
     private double throttle = -1.0;
     private long lastHeartbeatTime = -1;
 
+    private AudioTrack currentSong = null;
+
     MulticastReceiver multicastReceiver;
 
-    // la de da de da
     public VehicleStatusUpdater(WifiManager wifiManager) {
         multicastReceiver = new MulticastReceiver(new ReceiveDataCallback(), wifiManager);
     }
@@ -28,21 +32,36 @@ public class VehicleStatusUpdater {
             try {
                 JSONObject jsonObject = null;
                 jsonObject = new JSONObject(receivedData);
-                String metricName = jsonObject.getString("metricName");
-                metricName = metricName.toUpperCase(Locale.ROOT);
-                if (metricName.equals("RPM")) {
-                    rpm = jsonObject.getInt("value");
-                } else if (metricName.equals("SPEED")) {
-                    speed = jsonObject.getInt("value");
-                } else if (metricName.equals("GEAR")) {
-                    gear = jsonObject.getInt("value");
-                } else if (metricName.equals("THROTTLE")) {
-                    throttle = jsonObject.getDouble("value");
-                } else if (metricName.equals("HEARTBEAT")) {
-                    lastHeartbeatTime = System.currentTimeMillis();
-                } else {
-                    System.out.println("Encountered unrecognized metric: " + metricName);
+
+                for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    String metricName = key.toUpperCase(Locale.ROOT);
+
+                    if (metricName.equals("RPM")) {
+                        rpm = jsonObject.getInt("value");
+                    } else if (metricName.equals("SPEED")) {
+                        speed = jsonObject.getInt("value");
+                    } else if (metricName.equals("GEAR")) {
+                        gear = jsonObject.getInt("value");
+                    } else if (metricName.equals("THROTTLE")) {
+                        throttle = jsonObject.getDouble("value");
+                    } else if (metricName.equals("HEARTBEAT")) {
+                        lastHeartbeatTime = System.currentTimeMillis();
+                    } else {
+                        System.out.println("Encountered unrecognized metric: " + metricName);
+                    }
                 }
+
+                if (jsonObject.getString("__TYPE").toUpperCase().equals("SPOTIFY")) {
+                    currentSong = new AudioTrack(
+                            jsonObject.getString("song_name"),
+                            jsonObject.getString("artist_name"),
+                            jsonObject.getString("album_name")
+                    );
+                }
+
+//                String metricName = jsonObject.getString("metricName");
+
             } catch (Exception e) {
                 System.out.println("Encountered a JSONException with the following received String:");
                 System.out.println(receivedData);
@@ -69,5 +88,9 @@ public class VehicleStatusUpdater {
 
     public long getLastHeartbeatTime() {
         return lastHeartbeatTime;
+    }
+
+    public AudioTrack getCurrentSong() {
+        return currentSong;
     }
 }
