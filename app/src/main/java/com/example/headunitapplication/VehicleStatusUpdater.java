@@ -38,13 +38,13 @@ public class VehicleStatusUpdater {
                     String metricName = key.toUpperCase(Locale.ROOT);
 
                     if (metricName.equals("RPM")) {
-                        rpm = jsonObject.getInt("value");
+                        rpm = jsonObject.getInt("rpm");
                     } else if (metricName.equals("SPEED")) {
-                        speed = jsonObject.getInt("value");
+                        speed = jsonObject.getInt("speed");
                     } else if (metricName.equals("GEAR")) {
-                        gear = jsonObject.getInt("value");
+                        gear = jsonObject.getInt("gear");
                     } else if (metricName.equals("THROTTLE")) {
-                        throttle = jsonObject.getDouble("value");
+                        throttle = jsonObject.getDouble("throttle");
                     } else if (metricName.equals("HEARTBEAT")) {
                         lastHeartbeatTime = System.currentTimeMillis();
                     } else {
