@@ -17,6 +17,7 @@ public class VehicleStatusUpdater {
     private int gear = -1;
     private double throttle = -1.0;
     private long lastHeartbeatTime = -1;
+    private volatile boolean dynoMode = false;
 
     private AudioTrack currentSong = null;
 
@@ -47,6 +48,8 @@ public class VehicleStatusUpdater {
                         throttle = jsonObject.getDouble("throttle");
                     } else if (metricName.equals("HEARTBEAT")) {
                         lastHeartbeatTime = System.currentTimeMillis();
+                    } else if (metricName.equals("DYNO")) {
+                        dynoMode = jsonObject.getBoolean("dyno");
                     } else {
                         System.out.println("Encountered unrecognized metric: " + metricName);
                     }
@@ -92,5 +95,9 @@ public class VehicleStatusUpdater {
 
     public AudioTrack getCurrentSong() {
         return currentSong;
+    }
+
+    public boolean isDynoMode() {
+        return dynoMode;
     }
 }

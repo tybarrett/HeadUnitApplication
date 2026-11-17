@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.headunitapplication.controller.CurrentlyPlayingSong;
 import com.example.headunitapplication.controller.CurrentlyPlayingSongByIntent;
+import com.example.headunitapplication.controller.DynoMode;
 import com.example.headunitapplication.controller.EngineEffortRpm;
 import com.example.headunitapplication.controller.GpsPositionUpdater;
 import com.example.headunitapplication.controller.TelemetryStatus;
@@ -24,7 +26,9 @@ import com.example.headunitapplication.controller.ThrottlePosition;
 import com.example.headunitapplication.controller.VehicleGear;
 import com.example.headunitapplication.controller.VehicleSpeed;
 import com.example.headunitapplication.models.AudioTrack;
+import com.example.headunitapplication.models.DynoCurveData;
 import com.example.headunitapplication.models.GpsPosition;
+import com.example.headunitapplication.views.DynoGraphView;
 import com.example.headunitapplication.views.MapRotator;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -51,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     VehicleSpeed speedComponent;
     VehicleGear gearComponent;
     TelemetryStatus telemetryStatus;
+    DynoMode dynoModeComponent;
 
     public static final CameraPosition SYDNEY =
 //            new CameraPosition.Builder().target(new LatLng(-33.87365, 151.20689))
@@ -83,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
 
+            DynoGraphView dynoGraph = findViewById(R.id.dyno_graph);
+            dynoGraph.setCurve(DynoCurveData.curve());
+
 //            String[] location_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 //            requestPermissions(location_permissions, 0);
 
@@ -95,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 engineEffortComponent = new EngineEffortRpm(vehicleStatusUpdater);
                 engineEffortComponent.registerCallback(new EffortUpdater());
+                engineEffortComponent.registerCallback(new DynoRpmUpdater());
 
                 throttleComponent = new ThrottlePosition(vehicleStatusUpdater);
                 throttleComponent.registerCallback(new ThrottleUpdater());
@@ -107,6 +116,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 telemetryStatus = new TelemetryStatus(vehicleStatusUpdater);
                 telemetryStatus.registerCallback(new TelemetryUpdater());
+
+                dynoModeComponent = new DynoMode(vehicleStatusUpdater);
+                dynoModeComponent.registerCallback(new DynoModeUpdater());
 
                 initialized = true;
             }
@@ -352,6 +364,47 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
         }
+    }
+
+    class DynoModeUpdater extends CallbackObject<Boolean> {
+        private boolean showingDyno = false;
+
+        @Override
+        public void safe_update(Boolean dynoMode) {
+            if (dynoMode == showingDyno) {
+                return;
+            }
+            showingDyno = dynoMode;
+            runOnUiThread(() -> {
+                if (dynoMode) {
+                    showDyno();
+                } else {
+                    showMap();
+                }
+            });
+        }
+    }
+
+    class DynoRpmUpdater extends CallbackObject<Integer> {
+        @Override
+        public void safe_update(Integer rpm) {
+            runOnUiThread(() -> {
+                DynoGraphView dynoGraph = findViewById(R.id.dyno_graph);
+                if (dynoGraph.getVisibility() == View.VISIBLE) {
+                    dynoGraph.setRpm(rpm);
+                }
+            });
+        }
+    }
+
+    private void showDyno() {
+        findViewById(R.id.map_container).setVisibility(View.INVISIBLE);
+        findViewById(R.id.dyno_graph).setVisibility(View.VISIBLE);
+    }
+
+    private void showMap() {
+        findViewById(R.id.dyno_graph).setVisibility(View.GONE);
+        findViewById(R.id.map_container).setVisibility(View.VISIBLE);
     }
 
     /* "Widgets" to have:
