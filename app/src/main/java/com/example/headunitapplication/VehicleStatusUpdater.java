@@ -14,7 +14,7 @@ public class VehicleStatusUpdater {
 
     private int rpm = -1;
     private int speed = -1;
-    private int gear = -1;
+    private String gear = "N";
     private double throttle = -1.0;
     private long lastHeartbeatTime = -1;
     private volatile boolean dynoMode = false;
@@ -43,7 +43,7 @@ public class VehicleStatusUpdater {
                     } else if (metricName.equals("SPEED")) {
                         speed = jsonObject.getInt("speed");
                     } else if (metricName.equals("GEAR")) {
-                        gear = jsonObject.getInt("gear");
+                        gear = jsonObject.getString("gear");
                     } else if (metricName.equals("THROTTLE")) {
                         throttle = jsonObject.getDouble("throttle");
                     } else if (metricName.equals("HEARTBEAT")) {
@@ -81,7 +81,7 @@ public class VehicleStatusUpdater {
         return speed;
     }
 
-    public int getGear() {
+    public String getGear() {
         return gear;
     }
 

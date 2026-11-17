@@ -303,18 +303,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    class GearUpdater extends CallbackObject<Integer> {
+    class GearUpdater extends CallbackObject<String> {
         @Override
-        public void safe_update(Integer newGear) {
+        public void safe_update(String newGear) {
             runOnUiThread(() -> {
                 TextView gearText = findViewById(R.id.gear);
                 TextView gearSuffix = findViewById(R.id.gearSuffix);
                 gearText.setText(String.valueOf(newGear));
-                if (newGear == 1) {
+                if (newGear.equals("1")) {
                     gearSuffix.setText("ST");
-                } else if (newGear == 2) {
+                } else if (newGear.equals("2")) {
                     gearSuffix.setText("ND");
-                } else if (newGear == 3) {
+                } else if (newGear.equals("3")) {
                     gearSuffix.setText("RD");
                 } else {
                     gearSuffix.setText("TH");
